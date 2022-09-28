@@ -15,3 +15,4 @@ $storageContext = New-AzStorageContext -StorageAccountName $storageAccountName
 Backup-AzApiManagement -ResourceGroupName $apiManagementResourceGroup -Name $apiManagementName `
     -StorageContext $storageContext -TargetContainerName $containerName `
     -TargetBlobName $blobName -AccessType "UserAssignedManagedIdentity" ` -identityClientId $identityid
+exit $LASTEXITCODE
