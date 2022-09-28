@@ -3,7 +3,7 @@ $apiManagementResourceGroup="DemoRG001";
 $storageAccountName="demoback2";
 $storageResourceGroup="DemoRG001";
 $containerName="backup1";
-$blobName="apimbackup"
+$blobName="apimbackup_" + (Get-Date).tostring("dd-MM-yyyy-hh-mm-ss") 
 
 $identityName = "uamitest";
 $identityResourceGroup = "DemoRG001";
