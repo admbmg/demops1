@@ -1,9 +1,19 @@
 <#
     .SYNOPSIS
-    Azure automation PS script to backup Azure API Management configuration
+    Azure automation PSH script to backup Azure API Management configuration
       
-    .PREREQUISITES
-    IAM/RBAC Configuration 
+    .DESCRIPTION
+    Backup script for use with Azure Automation for backing up APIM 
+    
+    - Backups are not guaranteed to work beoynd 30 days of creation
+    - Picing tier must match when restoring.
+    - Parts not backed up:
+        - Custom Domain and Custom CA certificates
+        - VNET settings, Managed Identitiy config, Diagnostic settings
+        - Protocols and cipher settings 
+        - Developer portal content
+        
+    Required IAM/RBAC Configuration 
       umiAppId -> API Management Service Operator Role on APIM ressource
       umiAppId -> Managed Identity Operator on apimIdName
       apimIdName -> Storage Blob Data Contributor on Storage Account container
@@ -26,12 +36,6 @@
     Backup-AzApiManagement : https://docs.microsoft.com/en-us/powershell/module/az.apimanagement/backup-azapimanagement
 #>
 
-# User Managed id for script context (Object Principal id)
-# RBAC
-# umiAppId -> API Management Service Operator Role on APIM ressource
-# umiAppId -> Managed Identity Operator on apimIdName
-# apimIdName -> Storage Blob Data Contributor on Storage Account container
-
 Param
 (
     [Parameter (Mandatory= $false)]
@@ -51,10 +55,7 @@ $AzureContext = (Connect-AzAccount -Identity -AccountId $umiAppId).context
 # set and store context
 $AzureContext = Set-AzContext -SubscriptionName $AzureContext.Subscription -DefaultProfile $AzureContext
 
-(Get-AzContext).Subscription.id
-(Get-AzContext).Account.id
-
-### Backup APIM using UMI with Storage acc permission
+### Configuration - modify settings for env
 
 $apiManagementName="bmgapimtest1";
 $apiManagementResourceGroup="DemoRG001";
@@ -65,6 +66,8 @@ $blobName="apimbackup_" + (Get-Date).tostring("dd-MM-yyyy-hh-mm-ss")
 
 $apimIdName = "audev-integration-apimgr-mi";
 $identityResourceGroup = "DemoRG001";
+
+### End Configuration
 
 $identityId = (Get-AzUserAssignedIdentity -Name $apimIdName -ResourceGroupName $identityResourceGroup).ClientId
 Write-Output $identityId
