@@ -1,11 +1,11 @@
 $apiManagementName="bmgapimtest1";
 $apiManagementResourceGroup="DemoRG001";
-$storageAccountName="demoback2";
-$storageResourceGroup="DemoRG001";
-$containerName="backup1";
+$storageAccountName="audevinautbackup";
+$storageResourceGroup="AU-Common-Backup-Resources";
+$containerName="forbackup01";
 $blobName="apimbackup_" + (Get-Date).tostring("dd-MM-yyyy-hh-mm-ss") 
 
-$identityName = "uamitest";
+$identityName = "audev-integration-apimgr-mi";
 $identityResourceGroup = "DemoRG001";
 
 $identityId = (Get-AzUserAssignedIdentity -Name $identityName -ResourceGroupName $identityResourceGroup).ClientId
